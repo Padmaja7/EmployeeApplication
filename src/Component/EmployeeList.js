@@ -1,6 +1,7 @@
 import React, {Component } from 'react';
 import EmployeeService from '../Services/EmployeeService';
 import {Link} from 'react-router-dom';
+import '../App.css';
 
 class EmployeeList extends Component {
     constructor(props) {
@@ -23,6 +24,19 @@ class EmployeeList extends Component {
     //     this.props.history.push('/employee/'+id);
     // }
 
+    addButtonClick = () => {
+        this.props.history.push('/create-employee');
+    }
+
+    deleteEvent = (empId) => {
+        EmployeeService.deleteEmployee(empId).then(res => {
+            const empData = this.state.employees.filter(employee => employee.id !== empId)
+            this.setState({
+                employees: empData
+            })
+        })
+    }
+
     render() {
         const empTbody = (this.state.employees.map((employee) =>
         <tr key={employee.id}>
@@ -32,12 +46,16 @@ class EmployeeList extends Component {
             <td>
                 {/* <button onClick={() => this.viewEmployee(employee.id)}>View</button> */}
                 <Link to={'/employee/'+employee.id}>View</Link>
+                <Link to={'/edit-employee/'+employee.id}>Edit</Link>
+                <button className="btn btn-primary" onClick={() => this.deleteEvent(employee.id)}>Delete</button>
             </td>
         </tr>
     ));
+        
         return(
             <div className="container">
                 <h1>EMployee details</h1>
+                <button className="btn btn-primary marginBottom"  onClick={this.addButtonClick} >Add Employee</button>
                 <table className="table table-striped table-bordered">
                     <thead>
                         <tr>
